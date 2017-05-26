@@ -10,7 +10,7 @@ import glob
 import matplotlib.patches as patches
 from mpl_toolkits.mplot3d import Axes3D
 
-def plot(cat,filenumber):
+def plot(cat,filenumber,df_pixels,df_top_colors):
     
     folder = u'C:\\Users\\Tiger\\Documents\\Python\\houzz\\dataset'
     DIR = os.path.join(folder, cat, 'sample')
@@ -19,7 +19,6 @@ def plot(cat,filenumber):
     
     fac = 255.
     ar = df_pixels.loc[str(filenumber)]
-    print ar
     fs = 10
     fig = plt.figure(figsize=(15,4))
     ax1 = fig.add_subplot(131)
@@ -61,13 +60,14 @@ def plot(cat,filenumber):
     ax3.axis('off')
     ax3.set_title('Top 3 colors (left to right)',y=1.1, fontsize=fs+2)
 
-cats = ['kitchen', 'bedroom', 'bathroom', 'living']
-#cats = ['bedroom']
+if __name__ == '__main__':  
+    cats = ['kitchen', 'bedroom', 'bathroom', 'living']
+    #cats = ['bedroom']
 
-plt.close('all')
-for cat in cats:
-    
-    df_pixels = pd.read_pickle('%s_pixels.pkl' % cat)
-    df_top_colors = pd.read_pickle('%s_top_colors.pkl' % cat)
-    
-    plot(cat,10)
+    plt.close('all')
+    for cat in cats:
+
+        df_pixels = pd.read_pickle('%s_pixels.pkl' % cat)
+        df_top_colors = pd.read_pickle('%s_top_colors.pkl' % cat)
+
+        plot(cat,10,df_pixels,df_top_colors)
