@@ -87,14 +87,14 @@ def create_dataframes(category, Np):
     #pt.finish() 
     
     df_pixels = pd.concat(df_pixels_list)
-    
-    df_top_colors_hex = pd.DataFrame(top_colors_rgb, columns = ['color1_rgb', 'color2_rgb', 'color3_rgb'])
-    df_top_colors_rgb = pd.DataFrame(top_colors_hex, columns = ['color1_hex', 'color2_hex', 'color3_hex'])
-    df_top_colors_name = pd.DataFrame(top_colors_name, columns = ['color1', 'color2', 'color3'])
+    print top_colors_name
+    df_top_colors_hex = pd.DataFrame(top_colors_rgb, columns = ['color%d_rgb' % x for x in range(NUM_COLORS)])
+    df_top_colors_rgb = pd.DataFrame(top_colors_hex, columns = ['color%d_HEX' % x for x in range(NUM_COLORS)])
+    df_top_colors_name = pd.DataFrame(top_colors_name, columns = ['color%d' % x for x in range(NUM_COLORS)])
     
     df_top_colors = df_top_colors_hex.join(df_top_colors_rgb)
     df_top_colors = df_top_colors.join(df_top_colors_name)
-    df_top_colors.index.name = 'pixel'
+    df_top_colors.index.name = 'filenumber'
         
     return df_pixels, df_top_colors
 
@@ -119,7 +119,7 @@ def get_color_name(requested_color):
     return actual_name, closest_name
 
 def find_top_three_colors(ar):
-    NUM_CLUSTERS = 5
+    NUM_CLUSTERS = NUM_COLORS
     scaler = StandardScaler()
     ar = scaler.fit_transform(ar)
     
@@ -135,13 +135,13 @@ def find_top_three_colors(ar):
     
     counts, bins = scipy.histogram(vecs, len(codes))    # count occurrences
      
-    top_three = scaler.inverse_transform(codes[np.argsort(counts)[::-1]][0:3])
+    top = scaler.inverse_transform(codes[np.argsort(counts)[::-1]][0:NUM_COLORS])
     ar = scaler.inverse_transform(ar)
     
     colors_hex = []
     colors_rgb = []
     
-    for tt in top_three:    
+    for tt in top:    
         colors_hex.append(''.join(chr(int(c)) for c in tt).encode('hex'))
     for color in colors_hex:
         colors_rgb.append(list(colors.hex2color('#%s' % color)))
@@ -151,7 +151,8 @@ def find_top_three_colors(ar):
 if __name__ == '__main__':        
     
     LOAD = 0
-    SAVE = 0
+    SAVE = 1
+    NUM_COLORS = 20
     if LOAD:
         df_kitchen_pixels = pd.read_pickle('kitchen_pixels.pkl')
         df_bedroom_pixels = pd.read_pickle('bedroom_pixels.pkl')
@@ -165,7 +166,7 @@ if __name__ == '__main__':
         cats = sys.argv[1:]
         if cats == []:
             cats = ['kitchen', 'bedroom', 'bathroom', 'living']
-        Np = 3
+        Np = 500
         SCIPY = 0        
         
         for cat in cats:
