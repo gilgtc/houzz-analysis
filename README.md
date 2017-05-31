@@ -13,6 +13,4 @@ in a unique way.
 In this repo I include code to sample of photographs found on the
 Houzz website to learn what are the most common colors among different rooms
 types commonly found in a Houzz home (bathroom, kitchen, etc). There is also a
-classification machine learning model which uses pixel color
-data to classify photographs into different room types (it is very poor given
-just the pixel colors).
+file with several classification machine learning models using pixel color alone to classify photographs into different room types (as expected, the models are very poor given just the pixel colors).
